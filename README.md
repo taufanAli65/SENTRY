@@ -55,22 +55,30 @@ Employees are recognized through a face recognition system when entering or exit
 
 ### Branch Naming Convention
 - Use lowercase and hyphens.
-- Prefix with type:
-  - `feat/` for features (e.g., `feat/employee-auth`)
-  - `fix/` for bug fixes (e.g., `fix/weight-sensor-bug`)
-  - `docs/` for documentation (e.g., `docs/update-readme`)
-  - `refactor/` for refactoring (e.g., `refactor/db-schema`)
+- Follow the project branch structure for naming:
+  - For API development: `api/feature-name` (merged into `api-stable`)
+  - For Mobile development: `mobile/feature-name` (merged into `mobile-stable`)
+  - For Web development: `web/feature-name` (merged into `web-stable`)
+  - For Machine Learning: use `machine-learning` branch for all ML-related work
+  - For IoT: use `iot` branch for all IoT-related work
+- For general features, fixes, docs, or refactorings, use the format:  
+  - `feat/feature-name`, `fix/bug-description`, `docs/doc-topic`, `refactor/area`
 - Use descriptive names for the rest of the branch.
 
 #### Project Branch Structure
 - `api-stable`: API code that is ready for production.
+  - **Must contain:** Up-to-date API documentation (`README.md` or `docs/api.md`), OpenAPI/Swagger specs if available, environment sample files, and tested production-ready code.
 - For every API development, use: `api/feature-name`
 - `mobile-stable`: Stable version of the mobile app.
+  - **Must contain:** Mobile usage guide (`README.md`), screenshots or demo, environment sample files, and tested production-ready code.
 - For every mobile development, use: `mobile/feature-name`
 - `web-stable`: Web code that is ready for production.
+  - **Must contain:** Web deployment instructions (`README.md`), screenshots or demo, environment sample files, and tested production-ready code.
 - For every web development, use: `web/feature-name`
 - `machine-learning`: For machine learning related code or assets.
+  - **Must contain:** Model documentation (`README.md`), dataset/sample links, training/evaluation scripts, and usage instructions.
 - `iot`: For IoT related code or assets.
+  - **Must contain:** Hardware setup guide (`README.md`), wiring diagrams, firmware upload instructions, and tested code/assets.
 
 ### Pull Requests
 - Create a pull request (PR) for merging changes into the appropriate project branch (e.g., `api-stable`, `mobile-stable`, `web-stable`, `machine-learning`, or `iot`), not directly into `main`.
