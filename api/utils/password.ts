@@ -1,18 +1,11 @@
 import bcrypt from 'bcrypt';
 import generator from 'generate-password';
-
-interface GeneratedPassword {
-    password: string;
-    hashedPassword: string;
-}
-
-interface LoginResponse {
-    token: string;
-}
+import { GeneratedPassword } from '../types/auth_types';
+import { AppError } from './app_error';
 
 async function hashPassword(password: string): Promise<string> {
     if (!password) {
-        throw new Error("Password is required");
+        throw AppError("Password is required", 400);
     }
     const saltRoundsEnv = process.env.SALT_ROUNDS;
     const saltRounds = saltRoundsEnv ? parseInt(saltRoundsEnv, 10) : 10;
@@ -36,4 +29,4 @@ async function comparePassword(password: string, hashedPassword: string): Promis
     return await bcrypt.compare(password, hashedPassword);
 }
 
-export { generatePassword, comparePassword, LoginResponse };
+export { generatePassword, comparePassword };

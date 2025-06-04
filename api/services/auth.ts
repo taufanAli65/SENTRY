@@ -1,19 +1,13 @@
 import User from '../models/users';
-import { generatePassword, comparePassword, LoginResponse } from '../utils/password';
+import { LoginResponse, RegisterResult } from '../types/auth_types';
+import { AppError } from '../utils/app_error';
+import { generatePassword, comparePassword } from '../utils/password';
 import jwt from 'jsonwebtoken';
 
-interface RegisterResult {
-    id: string;
-    email: string;
-    password: string;
-    name: string;
-    photoUrl: string;
-    role: string;
-}
 
 async function register(email: string, name: string, photoUrl: string): Promise<RegisterResult> {
     if (!email || !name || !photoUrl) {
-        throw new Error("All fields are required");
+        throw AppError("All fields are required", 400);
     }
     const passwords = await generatePassword(); // Naming it passwords because it containing both hashed and without hashed password.
     const user = new User({
@@ -36,15 +30,15 @@ async function register(email: string, name: string, photoUrl: string): Promise<
 
 async function login(email: string, password: string): Promise<LoginResponse> {
     if (!email || !password) {
-        throw new Error("Email and password are required");
+        throw AppError("Email and password are required", 400);
     }
     const user = await User.findOne({ email });
     if (!user) {
-        throw new Error("There is no user with this email address");
+        throw AppError("User not found", 404);
     }
     const isValid = await comparePassword(password, user.password);
     if (!isValid) {
-        throw new Error("Invalid Password");
+        throw AppError("Invalid password", 401);
     }
     const token = jwt.sign(
         { id: user._id.toString(), email: user.email, role: user.role },
