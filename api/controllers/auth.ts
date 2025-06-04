@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { register, login } from '../services/auth';
 import { AppError } from '../utils/app_error';
-import { sendEmail } from '../utils/send_email';
 import { validateNewUserRole } from '../utils/registration_role';
-import { generatePassword } from '../utils/password';
+import { sendSuccess } from '../utils/send_response';
 
 export const registerEmployee = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
@@ -17,11 +16,7 @@ export const registerEmployee = async (req: Request, res: Response, next: NextFu
 
         await register(email, name, photoUrl, role);
 
-        return res.status(201).json({
-            status: "success",
-            message: "User registered successfully and welcome email sent"
-        });
-
+        return sendSuccess(res, 201, "Email registration successfully sent", null);
     } catch (error) {
         next(error);
     }
@@ -37,7 +32,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 
         const result = await login(email, password);
 
-        return res.status(200).json(result);
+        return sendSuccess(res, 200, "Login successful", result);
     } catch (error) {
       next(error);
     }
