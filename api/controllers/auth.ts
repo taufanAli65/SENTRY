@@ -9,10 +9,6 @@ import { loginSchema, registerSchema } from '../validator/auth_validator';
 export const registerEmployee = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
         const { email, name, photoUrl, role } = validate(registerSchema, req.body);
-        if (!email || !name || !photoUrl || !role) {
-            throw AppError("Email, name, photoUrl, and role are required", 400);
-        }
-
         validateNewUserRole(role);
 
         await register(email, name, photoUrl, role);
@@ -27,9 +23,6 @@ export const registerEmployee = async (req: Request, res: Response, next: NextFu
 export const loginUser = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
         const { email, password } = validate(loginSchema, req.body);
-        if (!email || !password) {
-            throw AppError("Email and password are required", 400);
-        }
 
         const result = await login(email, password);
 
