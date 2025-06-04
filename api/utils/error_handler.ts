@@ -13,7 +13,8 @@ const sendErrorDev = (error: IAppError, req: Request, res: Response): Response =
     status: error.status,
     error: error,
     message: error.message,
-    stack: error.stack
+    stack: error.stack,
+    data: error.data || null
   })
 }
 
@@ -22,7 +23,8 @@ const sendErrorProd = (error: IAppError, req: Request, res: Response): Response 
   if (error.isOperational) {
     return res.status(error.statusCode).json({
       status: error.status,
-      message: error.message
+      message: error.message,
+      data: error.data || null
     })
   }
 
