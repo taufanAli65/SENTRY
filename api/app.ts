@@ -4,6 +4,7 @@ dotenv.config();
 
 import { connectDB } from './config/connection';
 import indexRouter from './routes/index';
+import authRouter from './routes/auth';
 
 const app = express();
 
@@ -11,6 +12,7 @@ const port = process.env.PORT
 
 app.use(express.json());
 app.use('/', indexRouter);
+app.use('/auth', authRouter);
 
 connectDB().then(() => {
     app.listen(port, () => {

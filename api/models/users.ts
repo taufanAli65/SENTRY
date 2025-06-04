@@ -11,6 +11,7 @@ export interface IUser extends Document {
     name: string,
     role: UserRoles,
     photoUrl: string,
+    password: string
 }
 
 const userSchema = new Schema({
@@ -30,6 +31,7 @@ const userSchema = new Schema({
         default: UserRoles.Employee,
     },
     photoUrl: {type: String, required: true},
+    password: {type: String, required: true},
 });
 
 const User = model<IUser>('User', userSchema);
