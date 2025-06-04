@@ -18,7 +18,7 @@ This is a RESTful API for user authentication and item management.
 
 ### Authentication
 
-- `POST /auth/register`
+- `POST /auth/admin/register`
   - Registers a new user.
   - **Body:** `{ "email": string, "name": string, "photoUrl": string }`
   - **Response:** User info and generated password (for development only).
@@ -72,6 +72,7 @@ All item endpoints require authentication via JWT.
    JWT_SECRET=your_jwt_secret
    PORT=3000
    SALT_ROUNDS=10
+   NODE_ENV = your_node_env
    ```
 
 3. Start the server:  
