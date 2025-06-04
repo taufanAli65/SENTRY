@@ -9,6 +9,9 @@ import { loginSchema, registerSchema } from '../validator/auth_validator';
 export const registerEmployee = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
         const { email, name, photoUrl, role } = validate(registerSchema, req.body);
+        if (!email || !name || !photoUrl || !role) {
+            throw AppError("Email, name, photoUrl, and role are required", 400);
+        }
 
         validateNewUserRole(role);
 
