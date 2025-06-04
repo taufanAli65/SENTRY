@@ -1,7 +1,7 @@
 import User, { UserRoles } from '../models/users';
 import { LoginResponse, RegisterResult } from '../types/auth_types';
 import { AppError } from '../utils/app_error';
-import { comparePassword, generatePassword } from '../utils/password';
+import { comparePassword, generatePassword, hashPassword } from '../utils/password';
 import jwt from 'jsonwebtoken';
 import { sendEmail } from '../utils/send_email';
 
@@ -53,4 +53,54 @@ async function login(email: string, password: string): Promise<LoginResponse> {
     };
 }
 
-export { register, login };
+import crypto from 'crypto';
+
+async function forgotPassword(email: string): Promise<void> {
+    const user = await User.findOne({ email });
+    if (!user) {
+        throw AppError("User not found", 404);
+    }
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const passwordResetToken = crypto
+        .createHash('sha256')
+        .update(resetToken)
+        .digest('hex');
+
+    user.passwordResetToken = passwordResetToken;
+    user.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    await user.save();
+
+    await sendEmail({
+        to: email,
+        subject: 'Password Reset Request',
+        templateName: 'reset_password',
+        context: {
+            name: user.name,
+            resetUrl: `http://localhost:3000/auth/reset-password/${resetToken}`
+        }
+    });
+}
+
+async function resetPassword(token: string, newPassword: string): Promise<void> {
+    const hashedToken = crypto
+        .createHash('sha256')
+        .update(token)
+        .digest('hex');
+
+    const user = await User.findOne({
+        passwordResetToken: hashedToken,
+        passwordResetExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+        throw AppError("Invalid or expired reset token", 400);
+    }
+    const password = await hashPassword(newPassword);
+    user.password = password;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save();
+}
+
+export { register, login, forgotPassword, resetPassword };

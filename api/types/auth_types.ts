@@ -15,3 +15,12 @@ export interface GeneratedPassword {
 export interface LoginResponse {
   token: string;
 }
+
+export interface ResetPasswordRequest {
+  token: string;
+  newPassword: string;
+}
+
+export interface ForgotPasswordResponse {
+  message: string;
+}
