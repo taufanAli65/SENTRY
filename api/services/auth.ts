@@ -1,5 +1,5 @@
 import User from '../models/users';
-import { generatePassword, comparePassword } from '../utils/password';
+import { generatePassword, comparePassword, LoginResponse } from '../utils/password';
 import jwt from 'jsonwebtoken';
 
 interface RegisterResult {
@@ -34,7 +34,7 @@ async function register(email: string, name: string, photoUrl: string): Promise<
     };
 }
 
-async function login(email: string, password: string): Promise<string> {
+async function login(email: string, password: string): Promise<LoginResponse> {
     if (!email || !password) {
         throw new Error("Email and password are required");
     }
@@ -51,7 +51,9 @@ async function login(email: string, password: string): Promise<string> {
         process.env.JWT_SECRET as string,
         { expiresIn: "1d" }
     );
-    return token;
+    return {
+        token: token
+    };
 }
 
 export { register, login };

@@ -6,6 +6,10 @@ interface GeneratedPassword {
     hashedPassword: string;
 }
 
+interface LoginResponse {
+    token: string;
+}
+
 async function hashPassword(password: string): Promise<string> {
     if (!password) {
         throw new Error("Password is required");
@@ -32,4 +36,4 @@ async function comparePassword(password: string, hashedPassword: string): Promis
     return await bcrypt.compare(password, hashedPassword);
 }
 
-export { generatePassword, comparePassword };
+export { generatePassword, comparePassword, LoginResponse };
