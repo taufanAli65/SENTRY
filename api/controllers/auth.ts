@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { register, login } from '../services/auth';
 
-export const registerEmployee = async (req: Request, res: Response): Promise<Response | void> => {
+export const registerEmployee = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
         const { email, name, photoUrl } = req.body;
         if (!email || !name || !photoUrl) {
@@ -20,12 +20,11 @@ export const registerEmployee = async (req: Request, res: Response): Promise<Res
             password: result.password // Remove this in production!
         });
     } catch (error) {
-        const errorMessage = (error instanceof Error) ? error.message : 'Unknown error';
-        res.status(500).send({ error: errorMessage });
+      next(error);
     }
 }
 
-export const loginUser = async (req: Request, res: Response): Promise<Response | void> => {
+export const loginUser = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
         const { email, password } = req.body;
         if (!email || !password) {
@@ -36,7 +35,6 @@ export const loginUser = async (req: Request, res: Response): Promise<Response |
 
         res.status(200).json(result);
     } catch (error) {
-        const errorMessage = (error instanceof Error) ? error.message : 'Unknown error';
-        res.status(401).send({ error: errorMessage });
+      next(error);
     }
 }
