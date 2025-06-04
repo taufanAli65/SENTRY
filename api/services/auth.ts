@@ -9,6 +9,10 @@ async function register(email: string, name: string, photoUrl: string): Promise<
     if (!email || !name || !photoUrl) {
         throw AppError("All fields are required", 400);
     }
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+        throw AppError("User already exists", 409);
+    }
     const passwords = await generatePassword(); // Naming it passwords because it containing both hashed and without hashed password.
     const user = new User({
         email,
