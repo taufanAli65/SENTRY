@@ -35,9 +35,6 @@ async function register(email: string, name: string, photoUrl: string, role: Use
 }
 
 async function login(email: string, password: string): Promise<LoginResponse> {
-    if (!email || !password) {
-        throw AppError("Email and password are required", 400);
-    }
     const user = await User.findOne({ email });
     if (!user) {
         throw AppError("User not found", 404);
