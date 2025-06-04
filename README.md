@@ -1,6 +1,6 @@
 # SENTRY API
 
-This is a RESTful API for user authentication.
+This is a RESTful API for user authentication and item management.
 
 ## Prerequisites
 
@@ -28,6 +28,26 @@ This is a RESTful API for user authentication.
   - **Body:** `{ "email": string, "password": string }`
   - **Response:** JWT token if credentials are valid.
 
+### Item Management
+
+All item endpoints require authentication via JWT.
+
+- `GET /item/`
+  - Retrieves all items.
+  - **Headers:** `Authorization: Bearer <token>`
+  - **Response:** Array of items.
+
+- `GET /item/:id`
+  - Retrieves a single item by ID.
+  - **Headers:** `Authorization: Bearer <token>`
+  - **Response:** Item object.
+
+- `POST /item/`
+  - Creates a new item.
+  - **Headers:** `Authorization: Bearer <token>`
+  - **Body:** `{ "name": string, "weight": number }`
+  - **Response:** Created item object.
+
 ## User Model
 
 - `email`: string, required, unique
@@ -35,6 +55,11 @@ This is a RESTful API for user authentication.
 - `role`: string, one of `owner`, `admin`, `employee`
 - `photoUrl`: string, required
 - `password`: string, required (hashed)
+
+## Item Model
+
+- `name`: string, required
+- `weight`: number, required
 
 ## Setup
 
