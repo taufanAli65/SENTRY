@@ -1,0 +1,5 @@
+{
+  "ext": "ts",
+  "watch": ["api/**/*.ts"],
+  "exec": "npx ts-node api/app.ts"
+}
