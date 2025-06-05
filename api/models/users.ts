@@ -12,6 +12,8 @@ export interface IUser extends Document {
     role: UserRoles,
     photoUrl: string,
     password: string
+    passwordResetToken?: string;
+    passwordResetExpires?: Date;
 }
 
 const userSchema = new Schema({
@@ -32,7 +34,9 @@ const userSchema = new Schema({
     },
     photoUrl: {type: String, required: true},
     password: {type: String, required: true},
-});
+    passwordResetToken: {type: String},
+    passwordResetExpires: {type: Date}
+}, { timestamps: true });
 
 const User = model<IUser>('User', userSchema);
 

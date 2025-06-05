@@ -1,41 +1,66 @@
 import { Request, Response, NextFunction } from 'express';
-import { register, login } from '../services/auth';
-import { AppError } from '../utils/app_error';
+import { register, login, resetPassword, forgotPassword, ChangePassword } from '../services/auth';
+import { validateNewUserRole } from '../utils/registration_role';
+import { sendSuccess } from '../utils/send_response';
+import { validate } from '../utils/validate';
+import { changePasswordSchema, forgotPasswordSchema, loginSchema, registerSchema, resetPasswordSchema } from '../validator/auth_validator';
+import { AuthenticatedRequest } from '../types/auth_types';
 
 export const registerEmployee = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
-        const { email, name, photoUrl } = req.body;
-        if (!email || !name || !photoUrl) {
-            throw AppError("All fields are required", 400);
-        }
+        const { email, name, photoUrl, role } = validate(registerSchema, req.body);
+        validateNewUserRole(role);
 
-        const result = await register(email, name, photoUrl);
+        await register(email, name, photoUrl, role);
 
-        // TODO: Send the password to the user via email instead of returning it in the response
-        res.status(201).json({
-            id: result.id,
-            email: result.email,
-            name: result.name,
-            photoUrl: result.photoUrl,
-            role: result.role,
-            password: result.password // Remove this in production!
-        });
+        return sendSuccess(res, 201, "Email registration successfully sent", null);
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export const loginUser = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    try {
+        const { email, password } = validate(loginSchema, req.body);
+
+        const result = await login(email, password);
+
+        return sendSuccess(res, 200, "Login successful", result);
     } catch (error) {
       next(error);
     }
 }
 
-export const loginUser = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+export const forgotPasswordHandler = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
-        const { email, password } = req.body;
-        if (!email || !password) {
-            throw AppError("Email and password are required", 400);
-        }
-
-        const result = await login(email, password);
-
-        res.status(200).json(result);
+        const { email } = validate(forgotPasswordSchema, req.body);
+        await forgotPassword(email);
+        return sendSuccess(res, 200, "Password reset instructions sent to email", null);
     } catch (error) {
-      next(error);
+        next(error);
+    }
+}
+
+export const resetPasswordHandler = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    try {
+        const validated = validate(resetPasswordSchema, {
+            params: req.params,
+            body: req.body
+        });
+        await resetPassword(validated.params.token, validated.body.newPassword);
+        return sendSuccess(res, 200, "Password successfully reset", null);
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const changePasswordHandler = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<Response | void> => {
+    try {
+        const { old_password, new_password } = validate(changePasswordSchema, req.body);
+        await ChangePassword(old_password, new_password, req.user.email);
+        return sendSuccess(res, 200, "Password successfully changed", null);
+    } catch (error) {
+        next(error);
     }
 }

@@ -1,41 +1,40 @@
-import User from '../models/users';
+import User, { UserRoles } from '../models/users';
 import { LoginResponse, RegisterResult } from '../types/auth_types';
 import { AppError } from '../utils/app_error';
-import { generatePassword, comparePassword } from '../utils/password';
+import { comparePassword, generatePassword, hashPassword } from '../utils/password';
 import jwt from 'jsonwebtoken';
+import { sendEmail } from '../utils/send_email';
 
 
-async function register(email: string, name: string, photoUrl: string): Promise<RegisterResult> {
-    if (!email || !name || !photoUrl) {
-        throw AppError("All fields are required", 400);
-    }
+async function register(email: string, name: string, photoUrl: string, role: UserRoles): Promise<void> {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
         throw AppError("User already exists", 409);
     }
-    const passwords = await generatePassword(); // Naming it passwords because it containing both hashed and without hashed password.
+    const passwords = await generatePassword();
+    await sendEmail({
+        to: email,
+        subject: 'Account Created',
+        templateName: 'account_created',
+        context: {
+            name,
+            email,
+            password: passwords.password, // unhashed password
+            role,
+            login_url: `http://localhost:${process.env.PORT}/auth/login`
+        }
+    });
     const user = new User({
         email,
         password: passwords.hashedPassword,
         name,
         photoUrl,
+        role
     });
     await user.save();
-    // TODO: Send the password to the user via email instead of returning it in the response
-    return {
-        id: user._id.toString(),
-        email: user.email,
-        password: passwords.password, // Remove this in production!
-        name: user.name,
-        photoUrl: user.photoUrl,
-        role: user.role
-    };
 }
 
 async function login(email: string, password: string): Promise<LoginResponse> {
-    if (!email || !password) {
-        throw AppError("Email and password are required", 400);
-    }
     const user = await User.findOne({ email });
     if (!user) {
         throw AppError("User not found", 404);
@@ -54,4 +53,68 @@ async function login(email: string, password: string): Promise<LoginResponse> {
     };
 }
 
-export { register, login };
+import crypto from 'crypto';
+
+async function forgotPassword(email: string): Promise<void> {
+    const user = await User.findOne({ email });
+    if (!user) {
+        throw AppError("User not found", 404);
+    }
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const passwordResetToken = crypto
+        .createHash('sha256')
+        .update(resetToken)
+        .digest('hex');
+
+    user.passwordResetToken = passwordResetToken;
+    user.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    await user.save();
+
+    await sendEmail({
+        to: email,
+        subject: 'Password Reset Request',
+        templateName: 'reset_password',
+        context: {
+            name: user.name,
+            resetUrl: `http://localhost:${process.env.PORT}/auth/reset-password/${resetToken}`
+        }
+    });
+}
+
+async function resetPassword(token: string, newPassword: string): Promise<void> {
+    const hashedToken = crypto
+        .createHash('sha256')
+        .update(token)
+        .digest('hex');
+
+    const user = await User.findOne({
+        passwordResetToken: hashedToken,
+        passwordResetExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+        throw AppError("Invalid or expired reset token", 400);
+    }
+    const password = await hashPassword(newPassword);
+    user.password = password;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save();
+}
+
+async function ChangePassword(old_password: string, new_password: string, email: string): Promise<void> {
+    const user = await User.findOne({ email });
+    if (!user) {
+        throw AppError("User not found", 404);
+    }
+    const isValid = await comparePassword(old_password, user.password);
+    if (!isValid) {
+        throw AppError("Invalid password", 401);
+    }
+    const password = await hashPassword(new_password);
+    user.password = password;
+    await user.save();
+}
+
+export { register, login, forgotPassword, resetPassword, ChangePassword };

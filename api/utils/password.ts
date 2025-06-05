@@ -29,4 +29,4 @@ async function comparePassword(password: string, hashedPassword: string): Promis
     return await bcrypt.compare(password, hashedPassword);
 }
 
-export { generatePassword, comparePassword };
+export { generatePassword, comparePassword, hashPassword };
