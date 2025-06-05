@@ -4,6 +4,7 @@ import { AppError } from '../utils/app_error';
 import { comparePassword, generatePassword, hashPassword } from '../utils/password';
 import jwt from 'jsonwebtoken';
 import { sendEmail } from '../utils/send_email';
+import crypto from 'crypto';
 
 
 async function register(email: string, name: string, photoUrl: string, role: UserRoles): Promise<void> {
@@ -52,8 +53,6 @@ async function login(email: string, password: string): Promise<LoginResponse> {
         token: token
     };
 }
-
-import crypto from 'crypto';
 
 async function forgotPassword(email: string): Promise<void> {
     const user = await User.findOne({ email });

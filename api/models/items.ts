@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 
 export interface iItem extends Document {
     name: string,
-    weight: BigInteger
+    weight: number
 }
 
 const itemSchema = new Schema({
