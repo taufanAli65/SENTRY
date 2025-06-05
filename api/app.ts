@@ -6,6 +6,7 @@ import { connectDB } from './config/connection';
 import indexRouter from './routes/index';
 import authRouter from './routes/auth';
 import itemRouter from './routes/items';
+import scanRouter from './routes/scans';
 import { globalErrorHandler } from './utils/error_handler';
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/item', itemRouter);
+app.use('/scan', scanRouter);
 app.use(globalErrorHandler)
 
 connectDB().then(() => {

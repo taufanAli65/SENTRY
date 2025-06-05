@@ -38,6 +38,6 @@ const userSchema = new Schema({
     passwordResetExpires: {type: Date}
 }, { timestamps: true });
 
-const User = model<IUser>('User', userSchema);
+const User = model<IUser>('Users', userSchema);
 
 export default User;
