@@ -10,6 +10,11 @@ export const addItemSchema = z.object({
     weight: z.number(),
 });
 
-export const getItemByIdSchema = z.object({
+export const itemIdSchema = z.object({
     id: objectIdSchema
+});
+
+export const updateItemSchema = z.object({
+    name: z.string().min(5, "Name must be at least 5 characters"),
+    weight: z.number(),
 });

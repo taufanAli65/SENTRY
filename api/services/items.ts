@@ -33,4 +33,24 @@ async function getItemService(id: string): Promise<itemResult> {
     return {id: itemData._id.toString(), name: itemData.name, weight: Number(itemData.weight)};
 }
 
-export { addItemService, getItemsService, getItemService };
+async function updateItemService(id: string, name: string, weight: number): Promise<itemResult> {
+    const itemData = await Item.findOneAndUpdate(
+        { _id: id },
+        { name, weight },
+        { new: true }
+    );
+    if (!itemData) {
+        throw AppError("Item not found", 404);
+    }
+    return { id: itemData._id.toString(), name: itemData.name, weight: Number(itemData.weight) };
+}
+
+async function deleteItemService(id: string): Promise<itemResult> {
+    const itemData = await Item.findOneAndDelete({ _id: id });
+    if (!itemData) {
+        throw AppError("Item not found", 404);
+    }
+    return { id: itemData._id.toString(), name: itemData.name, weight: Number(itemData.weight) };
+}
+
+export { addItemService, getItemsService, getItemService, updateItemService, deleteItemService };

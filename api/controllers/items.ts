@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { addItemService, getItemsService, getItemService } from '../services/items';
-import { addItemSchema, getItemByIdSchema } from '../validator/item_validator';
+import { addItemService, getItemsService, getItemService, updateItemService, deleteItemService } from '../services/items';
+import { addItemSchema, itemIdSchema, updateItemSchema } from '../validator/item_validator';
 import { sendSuccess } from '../utils/send_response';
 import { validate } from '../utils/validate';
 
@@ -27,10 +27,31 @@ export const getItems = async (req: Request, res: Response, next: NextFunction):
 
 export const getItem = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
-        const { id } = validate(getItemByIdSchema, req.params);
+        const { id } = validate(itemIdSchema, req.params);
         const result = await getItemService(id);
         return sendSuccess(res, 200, `Get item with id:${id} sucess`, result);
     } catch (error) {
         next(error)
+    }
+}
+
+export const updateItem = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    try {
+        const { id } = validate(itemIdSchema, req.params);
+        const { name, weight } = validate(updateItemSchema, req.body);
+        const result = await updateItemService(id, name, weight);
+        return sendSuccess(res, 200, `Update item with id:${id} success`, result);
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const deleteItem = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    try {
+        const { id } = validate(itemIdSchema, req.params);
+        const result = await deleteItemService(id);
+        return sendSuccess(res, 200, `Delete item with id:${id} success`, result);
+    } catch (error) {
+        next(error);
     }
 }
