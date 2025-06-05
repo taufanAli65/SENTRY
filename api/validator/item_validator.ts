@@ -2,7 +2,7 @@ import { z } from 'zod'
 import mongoose from 'mongoose';
 
 const objectIdSchema = z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), {
-    message: "Invalid data type",
+    message: "Invalid ID, check again",
 });
 
 export const addItemSchema = z.object({
