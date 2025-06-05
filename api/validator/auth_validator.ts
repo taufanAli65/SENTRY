@@ -25,3 +25,8 @@ export const resetPasswordSchema = z.object({
     newPassword: z.string().min(3, "Password must be at least 3 characters")
   })
 });
+
+export const changePasswordSchema = z.object({
+  old_password: z.string().min(3, "Password must be at least 3 characters"),
+  new_password: z.string().min(3, "Password must be at least 3 characters"),
+})

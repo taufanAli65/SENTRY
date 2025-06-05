@@ -24,3 +24,13 @@ export interface ResetPasswordRequest {
 export interface ForgotPasswordResponse {
   message: string;
 }
+
+export interface AuthUser {
+    uid: string;
+    email: string;
+    role: string;
+}
+
+export interface AuthenticatedRequest extends Request {
+    user: AuthUser;
+}

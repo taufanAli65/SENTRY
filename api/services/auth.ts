@@ -103,4 +103,18 @@ async function resetPassword(token: string, newPassword: string): Promise<void> 
     await user.save();
 }
 
-export { register, login, forgotPassword, resetPassword };
+async function ChangePassword(old_password: string, new_password: string, email: string): Promise<void> {
+    const user = await User.findOne({ email });
+    if (!user) {
+        throw AppError("User not found", 404);
+    }
+    const isValid = await comparePassword(old_password, user.password);
+    if (!isValid) {
+        throw AppError("Invalid password", 401);
+    }
+    const password = await hashPassword(new_password);
+    user.password = password;
+    await user.save();
+}
+
+export { register, login, forgotPassword, resetPassword, ChangePassword };

@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { register, login, resetPassword, forgotPassword } from '../services/auth';
+import { register, login, resetPassword, forgotPassword, ChangePassword } from '../services/auth';
 import { validateNewUserRole } from '../utils/registration_role';
 import { sendSuccess } from '../utils/send_response';
 import { validate } from '../utils/validate';
-import { forgotPasswordSchema, loginSchema, registerSchema, resetPasswordSchema } from '../validator/auth_validator';
+import { changePasswordSchema, forgotPasswordSchema, loginSchema, registerSchema, resetPasswordSchema } from '../validator/auth_validator';
+import { AuthenticatedRequest } from '../types/auth_types';
 
 export const registerEmployee = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
@@ -49,6 +50,16 @@ export const resetPasswordHandler = async (req: Request, res: Response, next: Ne
         });
         await resetPassword(validated.params.token, validated.body.newPassword);
         return sendSuccess(res, 200, "Password successfully reset", null);
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const changePasswordHandler = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<Response | void> => {
+    try {
+        const { old_password, new_password } = validate(changePasswordSchema, req.body);
+        await ChangePassword(old_password, new_password, req.user.email);
+        return sendSuccess(res, 200, "Password successfully changed", null);
     } catch (error) {
         next(error);
     }
