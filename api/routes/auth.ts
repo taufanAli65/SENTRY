@@ -9,5 +9,5 @@ const router = Router();
 router.post('/admin/register', authenticate, authorize(UserRoles.Owner), (req: Request, res: Response, next: NextFunction) => { registerEmployee(req, res, next); });
 router.post('/login', (req: Request, res: Response, next: NextFunction) => { loginUser(req, res, next); });
 router.post('/forgot-password', (req: Request, res: Response, next: NextFunction) => { forgotPasswordHandler(req, res, next); });
-router.post('/reset-password', (req: Request, res: Response, next: NextFunction) => { resetPasswordHandler(req, res, next); });
+router.post('/reset-password/:token', (req: Request, res: Response, next: NextFunction) => { resetPasswordHandler(req, res, next); });
 export default router;

@@ -21,7 +21,7 @@ async function register(email: string, name: string, photoUrl: string, role: Use
             email,
             password: passwords.password, // unhashed password
             role,
-            login_url: `http://localhost:3000/auth/login`
+            login_url: `http://localhost:${process.env.PORT}/auth/login`
         }
     });
     const user = new User({
@@ -77,7 +77,7 @@ async function forgotPassword(email: string): Promise<void> {
         templateName: 'reset_password',
         context: {
             name: user.name,
-            resetUrl: `http://localhost:3000/auth/reset-password/${resetToken}`
+            resetUrl: `http://localhost:${process.env.PORT}/auth/reset-password/${resetToken}`
         }
     });
 }

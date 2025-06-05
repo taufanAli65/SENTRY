@@ -43,8 +43,11 @@ export const forgotPasswordHandler = async (req: Request, res: Response, next: N
 
 export const resetPasswordHandler = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
-        const { token, newPassword } = validate(resetPasswordSchema, req.body);
-        await resetPassword(token, newPassword);
+        const validated = validate(resetPasswordSchema, {
+            params: req.params,
+            body: req.body
+        });
+        await resetPassword(validated.params.token, validated.body.newPassword);
         return sendSuccess(res, 200, "Password successfully reset", null);
     } catch (error) {
         next(error);
