@@ -8,6 +8,7 @@ import authRouter from './routes/auth';
 import itemRouter from './routes/items';
 import scanRouter from './routes/scans';
 import rackRouter from './routes/racks';
+import WarehouseEntryRouter from './routes/warehouse_entries';
 import { globalErrorHandler } from './utils/error_handler';
 
 const app = express();
@@ -20,6 +21,7 @@ app.use('/auth', authRouter);
 app.use('/item', itemRouter);
 app.use('/scan', scanRouter);
 app.use('/rack', rackRouter);
+app.use('/warehouse/entry', WarehouseEntryRouter);
 app.use(globalErrorHandler)
 
 connectDB().then(() => {
