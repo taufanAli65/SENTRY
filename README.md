@@ -94,6 +94,36 @@ All item endpoints require authentication via JWT.
   Update a scan record (item taken from shelf).  
   **Role:** Employee
 
+### Rack Management
+
+All rack endpoints require authentication via JWT.
+
+- `POST /rack/`  
+  Creates a new rack entry (registers an item as added to or removed from the warehouse).  
+  **Body:**  
+  ```
+  {
+    "id_item": string,      // Item ObjectId
+    "isOut": boolean        // true if removing item, false if adding
+  }
+  ```
+  **Role:** Employee  
+  **Headers:** `Authorization: Bearer <token>`  
+  **Response:**  
+  ```
+  {
+    "success": true,
+    "message": "Item successfully added to the warehouse." | "Item successfully removed from the warehouse.",
+    "data": {
+      "id": string,
+      "id_item": string,
+      "weight": number,
+      "isOut": boolean,
+      "time": string // ISO date
+    }
+  }
+  ```
+
 ## Models
 
 ### User
