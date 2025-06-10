@@ -1,4 +1,4 @@
-import { Schema, model, Document, Types, models } from 'mongoose';
+import { Schema, model, Document, Types } from 'mongoose';
 
 export interface iScan extends Document {
     id_user: Types.ObjectId,
