@@ -5,6 +5,6 @@ import { authorize } from '../middleware/authorize';
 import { UserRoles } from '../models/users';
 
 const router = Router();
-router.post('/', authenticate, authorize(UserRoles.Employee), (req: Request, res: Response, next: NextFunction) => { createRack(req, res, next); });
+router.post('/', authenticate, authorize(UserRoles.Admin), (req: Request, res: Response, next: NextFunction) => { createRack(req, res, next); });
 
 export default router;
