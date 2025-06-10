@@ -4,8 +4,9 @@ import RackRealtime from '../models/rack_realtimes';
 import Item from '../models/items';
 import { AppError } from '../utils/app_error';
 import { RackResult } from '../types/rack_types';
+import { checkWeightDiscrepancy } from '../utils/thief_suspection';
 
-export async function createRackService(id_item: string, isOut: boolean): Promise<RackResult> {
+export async function createRackService(id_item: string, isOut: boolean): Promise<RackResult & { thiefSuspection?: string }> {
     const session = await mongoose.startSession();
     try {
         session.startTransaction();
@@ -46,13 +47,17 @@ export async function createRackService(id_item: string, isOut: boolean): Promis
 
         await session.commitTransaction();
 
-        // Return RackResult
+        // After transaction, check for thief suspection
+        const thiefSuspection = await checkWeightDiscrepancy(0.5); // Adjust threshold as needed
+
+        // Return RackResult, optionally with thiefSuspection message
         return {
             id: (rack._id as Types.ObjectId).toString(),
             id_item: rack.id_item,
             weight: rack.weight,
             isOut: rack.isOut,
             time: rack.time,
+            ...(thiefSuspection ? { thiefSuspection } : {})
         };
     } catch (err) {
         await session.abortTransaction();
