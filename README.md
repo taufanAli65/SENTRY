@@ -124,6 +124,33 @@ All rack endpoints require authentication via JWT.
   }
   ```
 
+### Warehouse Entry Management
+
+All warehouse entry endpoints require authentication via JWT.
+
+- `GET /warehouse/entry/`  
+  Retrieves all warehouse entry records (paginated).  
+  **Query params:**  
+  - `page`: number (default: 1)  
+  - `limit`: number (default: 10)  
+  **Role:** Owner
+
+- `GET /warehouse/entry/:id`  
+  Retrieves a single warehouse entry by ID.  
+  **Role:** Owner
+
+- `POST /warehouse/entry/`  
+  Creates a new warehouse entry record.  
+  **Body:**  
+  ```
+  {
+    "id_user": string,              // User ObjectId
+    "entry_time"?: string,          // Optional ISO date string (defaults to now)
+    "face_recognition": string      // URL or path to face recognition image
+  }
+  ```
+  **Role:** Owner
+
 ## Models
 
 ### User
@@ -146,6 +173,12 @@ All rack endpoints require authentication via JWT.
 - `in_time`: Date (auto)
 - `out_time`: Date (auto)
 - `isOut`: boolean
+
+### WarehouseEntry
+
+- `id_user`: string (User ObjectId), required
+- `entry_time`: Date, required (defaults to current time)
+- `face_recognition`: string, required (URL or path to face recognition image)
 
 ## Notes
 
