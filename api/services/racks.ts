@@ -48,7 +48,7 @@ export async function createRackService(id_item: string, isOut: boolean): Promis
         await session.commitTransaction();
 
         // After transaction, check for thief suspection
-        const thiefSuspection = await checkWeightDiscrepancy(0.5); // Adjust threshold as needed
+        const thiefSuspection = await checkWeightDiscrepancy(25000); // Adjust threshold as needed, currently set to 25 seconds
 
         // Return RackResult, optionally with thiefSuspection message
         return {

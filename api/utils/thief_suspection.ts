@@ -1,5 +1,5 @@
-import RackRealtime from '../models/rack_realtimes';
-import ItemStock from '../models/item_stocks';
+import RackRealtimes from '../models/rack_realtimes';
+import Scans from '../models/scans';
 import WarehouseEntry from '../models/warehouse_entries';
 
 /**
@@ -8,31 +8,33 @@ import WarehouseEntry from '../models/warehouse_entries';
  * identify the closest warehouse entry user as a suspect.
  */
 export async function checkWeightDiscrepancy(threshold: number): Promise<string | null> {
-    // Get the latest rack realtime weight
-    const rackRealtime = await RackRealtime.findOne().sort({ time: -1 });
-    if (!rackRealtime) return "No rack realtime data found.";
+    // Get the latest data when the weight sensor was last updated
+    const rackRealtimes = await RackRealtimes.findOne().sort({ time: -1 });
+    if (!rackRealtimes) return "No rack realtime data available.";
 
-    // Sum all item stocks' weights
-    const itemStocks = await ItemStock.find();
-    const totalItemStockWeight = itemStocks.reduce((sum, stock) => sum + (stock.weight || 0), 0);
+    // get the last scan of item stock
+    const lastScan = await Scans.findOne().sort({ out_time: -1 });
+    if (!lastScan) return "No recent item scan data available.";
 
-    // Compare
-    const diff = Math.abs(rackRealtime.weight - totalItemStockWeight);
-    if (diff > threshold) {
-        // Significant discrepancy detected, try to find suspect user
-        const userId = await findClosestWarehouseEntryUser(rackRealtime.time);
+    // Compare if rackRealtimes.time is similar to lastScan.time (within 1 second)
+    const rackTime = new Date(rackRealtimes.time).getTime();
+    const scanTime = new Date(lastScan.out_time).getTime();
+    const timeDiff = Math.abs(rackTime - scanTime);
+
+    if (timeDiff > threshold) {
+        const userId = await findClosestWarehouseEntryUser(rackRealtimes.time);
         if (userId) {
-            return `Suspected item theft: Rack weight (${rackRealtime.weight}) and ItemStock weight (${totalItemStockWeight}) differ by ${diff}, exceeding threshold (${threshold}). Closest warehouse entry user (suspect): ${userId}.`;
+            return `Warning: The latest rack sensor update (${rackRealtimes.time}) and the most recent item scan (${lastScan.out_time}) are not synchronized. Closest warehouse entry user (potentially relevant): ${userId}.`;
         } else {
-            return `Suspected item theft: Rack weight (${rackRealtime.weight}) and ItemStock weight (${totalItemStockWeight}) differ by ${diff}, exceeding threshold (${threshold}). No warehouse entry user found.`;
+            return `Alert: Rack sensor and item scan times are not synchronized, and no related warehouse entry user could be identified.`;
         }
     } else {
         // No significant discrepancy, but still find closest user for logging
-        const userId = await findClosestWarehouseEntryUser(rackRealtime.time);
+        const userId = await findClosestWarehouseEntryUser(rackRealtimes.time);
         if (userId) {
-            return `No significant discrepancy detected (diff: ${diff} < threshold: ${threshold}). Closest warehouse entry user: ${userId}.`;
+            return `Rack and item scan times are synchronized. Closest warehouse entry user: ${userId}.`;
         } else {
-            return `No significant discrepancy detected (diff: ${diff} < threshold: ${threshold}). No warehouse entry user found.`;
+            return `Rack and item scan times are synchronized. No related warehouse entry user found.`;
         }
     }
 }
