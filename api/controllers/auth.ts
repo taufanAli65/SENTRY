@@ -3,17 +3,34 @@ import { register, login, resetPassword, forgotPassword, ChangePassword } from '
 import { validateNewUserRole } from '../utils/registration_role';
 import { sendSuccess } from '../utils/send_response';
 import { validate } from '../utils/validate';
-import { changePasswordSchema, forgotPasswordSchema, loginSchema, registerSchema, resetPasswordSchema } from '../validator/auth_validator';
+import { changePasswordSchema, forgotPasswordSchema, loginSchema, registerSchema, resetPasswordSchema, validateImageSchema } from '../validator/auth_validator';
 import { AuthenticatedRequest } from '../types/auth_types';
+import { AppError } from '../utils/app_error';
+import { faceRecognitionPrediction } from '../services/mlservice';
+import User from '../models/users';
 
 export const registerEmployee = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
-        const { email, name, photoUrl, role } = validate(registerSchema, req.body);
+        const { email, name, role } = validate(registerSchema, req.body);
         validateNewUserRole(role);
-
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            throw AppError("User already exists", 409);
+        }
+        if (!req.file) {
+            throw AppError("photo is required", 400);
+        }
+        // Validasi file foto
+        const image = req.file as Express.Multer.File;
+        validate(validateImageSchema, { file: image });
+        // Register face recognition ke machine learning service
+        await faceRecognitionPrediction(name, image);
+        // Menyimpan foto ke direktori uploads
+        const photoUrl = `/uploads/${req.file.filename}`;
+        // Menyimpan data pengguna baru
         await register(email, name, photoUrl, role);
 
-        return sendSuccess(res, 201, "Email registration successfully sent", null);
+        return sendSuccess(res, 201, "Email registration successfully sent and photo has been recognized", null);
     } catch (error) {
         next(error);
     }

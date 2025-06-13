@@ -7,10 +7,6 @@ import { sendEmail } from '../utils/send_email';
 
 
 async function register(email: string, name: string, photoUrl: string, role: UserRoles): Promise<void> {
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-        throw AppError("User already exists", 409);
-    }
     const passwords = await generatePassword();
     await sendEmail({
         to: email,
