@@ -18,12 +18,13 @@ This is a RESTful API for user authentication.
 
 ### Authentication
 
-- `POST /auth/register`
-  - Registers a new user.
-  - **Body:** `{ "email": string, "name": string, "photoUrl": string }`
-  - **Response:** User info and generated password (for development only).
+- `POST /auth/register form-data`
 
+  - Registers a new user.
+  - **Body:** `{ "email": string, "role": string, "name": string, "photo": image }`
+  - **Response:** User info and generated password (for development only).
 - `POST /auth/login`
+
   - Logs in a user.
   - **Body:** `{ "email": string, "password": string }`
   - **Response:** JWT token if credentials are valid.
@@ -38,18 +39,16 @@ This is a RESTful API for user authentication.
 
 ## Setup
 
-1. Install dependencies:  
-   `npm install`
-
+1. Install dependencies:`npm install`
 2. Set environment variables in a `.env` file:
+
    ```
    MONGODB_URL=your_mongodb_connection_string
    JWT_SECRET=your_jwt_secret
    PORT=3000
    SALT_ROUNDS=10
    ```
-
-3. Start the server:  
+3. Start the server:
    `npm start`
 
 ## Notes
@@ -57,4 +56,3 @@ This is a RESTful API for user authentication.
 - Passwords are returned in registration responses for development only. Remove this in production.
 - JWT tokens are used for authentication.
 - MongoDB is required for data storage.
-
