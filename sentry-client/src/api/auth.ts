@@ -1,9 +1,4 @@
-import axios from 'axios'
-
-const api = axios.create({
-  baseURL: '',
-  withCredentials: true,
-})
+import api from './axios'
 
 export async function login(email: string, password: string) {
   return api.post('/api/auth/login', { email, password })
@@ -22,4 +17,3 @@ export async function registerUser(formData: FormData) {
     headers: { 'Content-Type': 'multipart/form-data' },
   })
 }
-export default api

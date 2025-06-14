@@ -55,6 +55,12 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/RegisterUserView.vue'),
     meta: { requiresAuth: true, role: 'owner' },
   },
+  {
+    path: '/create-item',
+    name: 'create-item',
+    component: () => import('../views/CreateItemView.vue'),
+    meta: { requiresAuth: true, role: 'owner' },
+  },
   { path: '/:pathMatch(.*)*', component: () => import('../views/NotFound.vue') },
 ]
 

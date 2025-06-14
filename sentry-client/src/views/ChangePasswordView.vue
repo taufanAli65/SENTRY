@@ -35,7 +35,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import api from '@/api/auth'
+import api from '@/api/axios'
 
 const oldPassword = ref('')
 const newPassword = ref('')

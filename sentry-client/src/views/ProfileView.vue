@@ -28,7 +28,7 @@ import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'vue-router'
-import api from '@/api/auth'
+import api from '@/api/axios'
 
 const userStore = useUserStore()
 const user = ref(userStore.user)
