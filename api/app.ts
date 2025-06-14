@@ -9,7 +9,8 @@ import indexRouter from './routes/index';
 import authRouter from './routes/auth';
 import userRouter from './routes/user';
 import itemRouter from './routes/item';
-import { globalErrorHandler } from './utils/error_handler';
+import { multerErrorHandler } from "./middleware/multer_error_handler";
+import { globalErrorHandler } from "./utils/error_handler";
 import path from 'path';
 
 const app = express();
@@ -28,6 +29,7 @@ app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
 app.use('/items', itemRouter);
+app.use(multerErrorHandler);
 app.use(globalErrorHandler)
 
 connectDB().then(() => {
