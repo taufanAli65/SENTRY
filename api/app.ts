@@ -1,5 +1,6 @@
 import express from 'express';
 import * as dotenv from 'dotenv';
+import cors from 'cors';
 dotenv.config();
 import cookieParser from 'cookie-parser';
 
@@ -10,8 +11,13 @@ import userRouter from './routes/user';
 import { globalErrorHandler } from './utils/error_handler';
 
 const app = express();
+app.use(cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+}));
 
-const port = process.env.PORT
+const port = process.env.PORT || 8000;
 
 app.use(express.json());
 app.use(cookieParser());
