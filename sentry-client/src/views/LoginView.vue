@@ -11,6 +11,11 @@
       </div>
       <Button type="submit" class="w-full">Login</Button>
       <div v-if="error" class="text-red-500 text-center text-sm mt-2">{{ error }}</div>
+      <div class="text-center mt-4">
+        <Button variant="link" @click="router.push('/forgot-password')" class="text-blue-600"
+          >Forgot Password?</Button
+        >
+      </div>
     </form>
   </div>
 </template>

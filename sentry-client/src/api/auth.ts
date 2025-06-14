@@ -11,4 +11,10 @@ export async function login(email: string, password: string) {
 export async function logout() {
   return api.post('/api/auth/logout')
 }
+export async function forgotPassword(email: string) {
+  return api.post('/api/auth/forgot-password', { email })
+}
+export async function resetPassword(token: string, newPassword: string) {
+  return api.post(`/api/auth/reset-password/${token}`, { newPassword })
+}
 export default api
