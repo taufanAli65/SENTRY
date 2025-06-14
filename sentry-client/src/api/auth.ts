@@ -17,4 +17,9 @@ export async function forgotPassword(email: string) {
 export async function resetPassword(token: string, newPassword: string) {
   return api.post(`/api/auth/reset-password/${token}`, { newPassword })
 }
+export async function registerUser(formData: FormData) {
+  return api.post('/api/auth/admin/register', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  })
+}
 export default api

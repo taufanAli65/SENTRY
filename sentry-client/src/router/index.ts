@@ -49,6 +49,12 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/ChangePasswordView.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/register-user',
+    name: 'register-user',
+    component: () => import('../views/RegisterUserView.vue'),
+    meta: { requiresAuth: true, role: 'owner' },
+  },
   { path: '/:pathMatch(.*)*', component: () => import('../views/NotFound.vue') },
 ]
 
