@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import api, { logout } from '@/api/auth'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -14,6 +15,18 @@ export const useUserStore = defineStore('user', {
       this.user = user
     },
     logout() {
+      this.user = null
+    },
+    async fetchUser() {
+      try {
+        const res = await api.get('/api/user/profile')
+        this.user = res.data.data
+      } catch {
+        this.user = null
+      }
+    },
+    async logoutUser() {
+      await logout()
       this.user = null
     },
   },

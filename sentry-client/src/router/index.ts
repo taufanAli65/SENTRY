@@ -1,11 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-
 import type { RouteRecordRaw } from 'vue-router'
 
 const routes: RouteRecordRaw[] = [
   { path: '/', redirect: '/login' },
-  { path: '/login', component: () => import('../views/LoginView.vue') },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/LoginView.vue'),
+    meta: { guestOnly: true },
+  },
   {
     path: '/owner',
     component: () => import('../views/DashboardOwner.vue'),
@@ -29,9 +33,23 @@ const router = createRouter({
   routes,
 })
 
+let userFetched = false
+
 // Navigation Guard
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const store = useUserStore()
+  if (!userFetched) {
+    await store.fetchUser()
+    userFetched = true
+  }
+
+  if (to.meta.guestOnly && store.user) {
+    if (store.user.role === 'owner') return next('/owner')
+    if (store.user.role === 'admin') return next('/admin')
+    if (store.user.role === 'employee') return next('/employee')
+    return next('/')
+  }
+
   if (to.meta.requiresAuth) {
     if (!store.user) {
       return next('/login')
