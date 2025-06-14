@@ -8,6 +8,7 @@ import { connectDB } from './config/connection';
 import indexRouter from './routes/index';
 import authRouter from './routes/auth';
 import userRouter from './routes/user';
+import itemRouter from './routes/item';
 import { globalErrorHandler } from './utils/error_handler';
 import path from 'path';
 
@@ -26,6 +27,7 @@ app.use(cookieParser());
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
+app.use('/items', itemRouter);
 app.use(globalErrorHandler)
 
 connectDB().then(() => {
