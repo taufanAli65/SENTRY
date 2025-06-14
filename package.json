@@ -24,10 +24,12 @@
   },
   "homepage": "https://github.com/taufanAli65/SENTRY#readme",
   "dependencies": {
+    "@types/cookie-parser": "^1.4.9",
     "@types/express": "^5.0.2",
     "@types/node": "^22.15.29",
     "axios": "^1.9.0",
     "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "express-list-endpoints": "^7.1.1",

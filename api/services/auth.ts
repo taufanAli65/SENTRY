@@ -45,7 +45,13 @@ async function login(email: string, password: string): Promise<LoginResponse> {
         { expiresIn: "1d" }
     );
     return {
-        token: token
+        user: {
+            id: user._id.toString(),
+            email: user.email,
+            name: user.name,
+            role: user.role
+        },
+        token
     };
 }
 

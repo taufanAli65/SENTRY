@@ -42,8 +42,14 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         const { email, password } = validate(loginSchema, req.body);
 
         const result = await login(email, password);
+        res.cookie('token', result.token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 24 * 60 * 60 * 1000
+        });
 
-        return sendSuccess(res, 200, "Login successful", result);
+        return sendSuccess(res, 200, "Login successful", result.user);
     } catch (error) {
       next(error);
     }
