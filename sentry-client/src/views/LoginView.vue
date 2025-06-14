@@ -1,8 +1,8 @@
 <template>
   <form @submit.prevent="onLogin">
-    <input v-model="email" placeholder="Email" type="email" required />
-    <input v-model="password" placeholder="Password" type="password" required />
-    <button type="submit">Login</button>
+    <Input v-model="email" placeholder="Email" type="email" required />
+    <Input v-model="password" placeholder="Password" type="password" required />
+    <Button type="submit">Login</Button>
     <div v-if="error" style="color:red">{{ error }}</div>
   </form>
 </template>
@@ -12,6 +12,8 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { login } from '../api/auth';
+import Button from '@/components/ui/button/Button.vue';
+import { Input } from '@/components/ui/input';
 
 const email = ref('');
 const password = ref('');
