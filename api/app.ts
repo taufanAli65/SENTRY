@@ -9,6 +9,7 @@ import indexRouter from './routes/index';
 import authRouter from './routes/auth';
 import userRouter from './routes/user';
 import { globalErrorHandler } from './utils/error_handler';
+import path from 'path';
 
 const app = express();
 app.use(cors({
@@ -16,6 +17,7 @@ app.use(cors({
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
 
 const port = process.env.PORT || 8000;
 
