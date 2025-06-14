@@ -37,6 +37,18 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/DashboardEmployee.vue'),
     meta: { requiresAuth: true, role: 'employee' },
   },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: () => import('../views/ProfileView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/change-password',
+    name: 'change-password',
+    component: () => import('../views/ChangePasswordView.vue'),
+    meta: { requiresAuth: true },
+  },
   { path: '/:pathMatch(.*)*', component: () => import('../views/NotFound.vue') },
 ]
 

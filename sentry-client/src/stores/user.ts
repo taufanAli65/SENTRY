@@ -8,6 +8,7 @@ export const useUserStore = defineStore('user', {
       email: string
       name: string
       role: string
+      photoUrl: string
     },
   }),
   actions: {
