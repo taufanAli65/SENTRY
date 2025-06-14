@@ -79,7 +79,7 @@ async function forgotPassword(email: string): Promise<void> {
         templateName: 'reset_password',
         context: {
             name: user.name,
-            resetUrl: `http://localhost:${process.env.PORT}/auth/reset-password/${resetToken}`
+            resetUrl: `${process.env.CLIENT_URL}/reset-password/${resetToken}`
         }
     });
 }
