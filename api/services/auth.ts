@@ -1,5 +1,6 @@
+import crypto from 'crypto';
 import User, { UserRoles } from '../models/users';
-import { LoginResponse, RegisterResult } from '../types/auth_types';
+import { LoginResponse } from '../types/auth_types';
 import { AppError } from '../utils/app_error';
 import { comparePassword, generatePassword, hashPassword } from '../utils/password';
 import jwt from 'jsonwebtoken';
@@ -55,7 +56,6 @@ async function login(email: string, password: string): Promise<LoginResponse> {
     };
 }
 
-import crypto from 'crypto';
 
 async function forgotPassword(email: string): Promise<void> {
     const user = await User.findOne({ email });
