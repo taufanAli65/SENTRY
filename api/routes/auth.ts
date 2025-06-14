@@ -15,4 +15,8 @@ router.post('/reset-password/:token', (req: Request, res: Response, next: NextFu
 router.put('/change-password', authenticate, (req: Request, res: Response, next: NextFunction) => {
     changePasswordHandler(req as unknown as AuthenticatedRequest, res, next);
 });
+router.post('/logout', (req, res) => {
+  res.clearCookie('token')
+  res.status(200).json({ message: 'Logged out' })
+})
 export default router;
