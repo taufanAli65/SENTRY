@@ -276,7 +276,6 @@ import {
   Loader2,
   CheckCircle,
   AlertCircle,
-  Info,
   Monitor,
   Activity,
 } from 'lucide-vue-next'
@@ -338,15 +337,6 @@ function getRoleVariant(role: string) {
     default:
       return 'outline'
   }
-}
-
-function formatDate(dateString: string): string {
-  if (!dateString) return 'N/A'
-  return new Date(dateString).getFullYear().toString()
-}
-
-function getStatusIcon(status: string): string {
-  return status === 'active' ? '🟢' : '🔴'
 }
 
 async function onSubmitPassword() {
