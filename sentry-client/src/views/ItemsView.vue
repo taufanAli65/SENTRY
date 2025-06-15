@@ -46,7 +46,7 @@
                   <td class="py-2 px-4">{{ (page - 1) * limit + idx + 1 }}</td>
                   <td class="py-2 px-4">
                     <img
-                      :src="apiBase + item.photo_url"
+                      :src="`api/${item.photo_url}`"
                       alt="photo"
                       class="w-12 h-12 object-cover rounded"
                     />
@@ -99,7 +99,7 @@
         <div v-if="selectedItem" class="space-y-4">
           <div class="flex gap-4">
             <img
-              :src="apiBase + selectedItem.photo_url"
+              :src="`api/${selectedItem.photo_url}`"
               alt="photo"
               class="w-32 h-32 object-cover rounded"
             />
@@ -162,8 +162,6 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { Eye, Trash, Package } from 'lucide-vue-next'
-
-const apiBase = 'http://localhost:8000' // Ganti jika baseURL berbeda
 
 const items = ref<any[]>([])
 const page = ref(1)
