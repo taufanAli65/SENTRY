@@ -70,6 +70,14 @@
                 </RouterLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
+            <SidebarMenuItem v-if="user.role === 'owner'">
+              <SidebarMenuButton as-child :is-active="isCurrentRoute('/users-management')">
+                <RouterLink to="/users-management">
+                  <Users class="size-4" />
+                  <span>User Management</span>
+                </RouterLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>
@@ -270,7 +278,7 @@ import {
   LogOut,
   ChevronsUpDown,
   Plus,
-  Package
+  Package,
 } from 'lucide-vue-next'
 
 import { ref, onMounted } from 'vue'
