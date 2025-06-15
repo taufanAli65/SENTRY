@@ -64,9 +64,9 @@ function getCurrentPageTitle(): string {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem class="hidden md:block">
-              <BreadcrumbLink href="/">
-                {{ breadcrumbTitle }}
-              </BreadcrumbLink>
+              <RouterLink to="/" custom v-slot="{ navigate }">
+                <BreadcrumbLink @click="navigate">{{ breadcrumbTitle }}</BreadcrumbLink>
+              </RouterLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator class="hidden md:block" />
             <BreadcrumbItem>
