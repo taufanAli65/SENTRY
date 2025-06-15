@@ -81,7 +81,7 @@
             <SidebarMenuItem>
               <SidebarMenuButton as-child :is-active="isCurrentRoute('/create-item')">
                 <RouterLink to="/create-item">
-                  <UserPlus class="size-4" />
+                  <Plus class="size-4" />
                   <span>Create Item</span>
                 </RouterLink>
               </SidebarMenuButton>
@@ -261,6 +261,7 @@ import {
   Settings,
   LogOut,
   ChevronsUpDown,
+  Plus,
 } from 'lucide-vue-next'
 
 import { ref, onMounted } from 'vue'
