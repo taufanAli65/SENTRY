@@ -119,7 +119,6 @@
       </Alert>
     </div>
 
-    <!-- Suspend Confirmation Dialog -->
     <Dialog v-model:open="suspendOpen">
       <DialogContent>
         <DialogHeader>
@@ -132,9 +131,16 @@
         </div>
         <DialogFooter>
           <Button variant="outline" @click="suspendOpen = false">Cancel</Button>
-          <Button variant="destructive" @click="suspendUser" :loading="loadingAction"
-            >Suspend</Button
+          <Button
+            type="submit"
+            class="min-w-[120px]"
+            :disabled="loadingAction"
+            @click="suspendUser"
           >
+            <Loader2 v-if="loadingAction" class="w-4 h-4 mr-2 animate-spin" />
+            <AlertCircle v-else class="w-4 h-4 mr-2" />
+            {{ loadingAction ? 'Suspending...' : 'Suspend' }}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -152,9 +158,16 @@
         </div>
         <DialogFooter>
           <Button variant="outline" @click="unsuspendOpen = false">Cancel</Button>
-          <Button variant="default" @click="unsuspendUser" :loading="loadingAction"
-            >Unsuspend</Button
+          <Button
+            type="submit"
+            class="min-w-[120px]"
+            :disabled="loadingAction"
+            @click="unsuspendUser"
           >
+            <Loader2 v-if="loadingAction" class="w-4 h-4 mr-2 animate-spin" />
+            <CheckCircle v-else class="w-4 h-4 mr-2" />
+            {{ loadingAction ? 'Unsuspending...' : 'Unsuspend' }}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -175,7 +188,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Users, CheckCircle, AlertCircle } from 'lucide-vue-next'
+import { Users, CheckCircle, AlertCircle, Loader2 } from 'lucide-vue-next'
 
 const users = ref<any[]>([])
 const page = ref(1)
