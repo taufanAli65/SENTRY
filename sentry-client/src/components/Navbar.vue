@@ -86,6 +86,14 @@
                 </RouterLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton as-child :is-active="isCurrentRoute('/items')">
+                <RouterLink to="/items">
+                  <Package class="size-4" />
+                  <span>Items</span>
+                </RouterLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>
@@ -262,6 +270,7 @@ import {
   LogOut,
   ChevronsUpDown,
   Plus,
+  Package
 } from 'lucide-vue-next'
 
 import { ref, onMounted } from 'vue'
