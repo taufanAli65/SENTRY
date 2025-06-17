@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Face Recognizer Realtime</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        position: relative;
+        font-family: sans-serif;
+        background-color: #111;
+        color: white;
+      }
+
+      #video,
+      #canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      #result {
+        position: absolute;
+        top: 500px;
+        left: 10px;
+        background-color: rgba(0, 0, 0, 0.6);
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Video dan Canvas -->
+    <video id="video" width="640" height="480" autoplay></video>
+    <canvas id="canvas" width="640" height="480"></canvas>
+
+    <!-- Hasil deteksi -->
+    <div id="result">Mendeteksi wajah...</div>
+
+    <script>
+      const video = document.getElementById("video");
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+
+      // Akses kamera
+      navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+        video.srcObject = stream;
+      });
+
+      function recognize() {
+        // Tangkap frame dari video ke canvas sementara
+        const tempCanvas = document.createElement("canvas");
+        tempCanvas.width = video.videoWidth;
+        tempCanvas.height = video.videoHeight;
+        const tempCtx = tempCanvas.getContext("2d");
+        tempCtx.drawImage(video, 0, 0);
+
+        tempCanvas.toBlob((blob) => {
+          const formData = new FormData();
+          formData.append("image", blob, "snapshot.jpg");
+
+          fetch("http://127.0.0.1:7860/recognize", {
+            method: "POST",
+            body: formData,
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              ctx.clearRect(0, 0, canvas.width, canvas.height); // Bersihkan kotak sebelumnya
+              const resultEl = document.getElementById("result");
+
+              if (data.faces && data.faces.length > 0) {
+                resultEl.innerHTML = data.faces
+                  .map(
+                    (face, i) =>
+                      `Wajah ${i + 1}: ${face.name} (Akurasi: ${
+                        face.accuracy
+                      }%)`
+                  )
+                  .join("<br>");
+
+                // Gambar kotak wajah dan nama
+                data.faces.forEach((face) => {
+                  const [top, right, bottom, left] = face.location;
+
+                  ctx.beginPath();
+                  ctx.lineWidth = 2;
+                  ctx.strokeStyle = "lime";
+                  ctx.rect(left, top, right - left, bottom - top);
+                  ctx.stroke();
+
+                  ctx.font = "16px Arial";
+                  ctx.fillStyle = "lime";
+                  ctx.fillText(
+                    `${face.name} (${face.accuracy}%)`,
+                    left,
+                    top - 5
+                  );
+                });
+              } else {
+                resultEl.textContent = "Tidak ada wajah dikenali.";
+              }
+            })
+            .catch((err) => {
+              console.error("Error:", err);
+              document.getElementById("result").textContent =
+                "Gagal mendeteksi";
+            });
+        }, "image/jpeg");
+      }
+
+      // Jalankan deteksi setiap 1 detik
+      setInterval(recognize, 1000);
+    </script>
+  </body>
+</html>
