@@ -7,34 +7,34 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('../views/LoginView.vue'),
+    component: () => import('../views/Auth/LoginView.vue'),
     meta: { guestOnly: true },
   },
   {
     path: '/forgot-password',
     name: 'forgot-password',
-    component: () => import('../views/ForgotPasswordView.vue'),
+    component: () => import('../views/Auth/ForgotPasswordView.vue'),
     meta: { guestOnly: true },
   },
   {
     path: '/reset-password/:token',
     name: 'reset-password',
-    component: () => import('../views/ResetPasswordView.vue'),
+    component: () => import('../views/Auth/ResetPasswordView.vue'),
     meta: { guestOnly: true },
   },
   {
     path: '/owner',
-    component: () => import('../views/DashboardOwner.vue'),
+    component: () => import('../views/Owner/DashboardOwner.vue'),
     meta: { requiresAuth: true, role: 'owner' },
   },
   {
     path: '/admin',
-    component: () => import('../views/DashboardAdmin.vue'),
+    component: () => import('../views/Admin/DashboardAdmin.vue'),
     meta: { requiresAuth: true, role: 'admin' },
   },
   {
     path: '/employee',
-    component: () => import('../views/DashboardEmployee.vue'),
+    component: () => import('../views/Employee/DashboardEmployee.vue'),
     meta: { requiresAuth: true, role: 'employee' },
   },
   {
@@ -46,7 +46,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/users-management',
     name: 'users-management',
-    component: () => import('../views/UsersManagementView.vue'),
+    component: () => import('../views/Owner/UsersManagementView.vue'),
     meta: { requiresAuth: true, role: 'owner' },
   },
   {
@@ -58,13 +58,13 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/register-user',
     name: 'register-user',
-    component: () => import('../views/RegisterUserView.vue'),
+    component: () => import('../views/Owner/RegisterUserView.vue'),
     meta: { requiresAuth: true, role: 'owner' },
   },
   {
     path: '/create-item',
     name: 'create-item',
-    component: () => import('../views/CreateItemView.vue'),
+    component: () => import('../views/Owner/CreateItemView.vue'),
     meta: { requiresAuth: true, role: 'owner' },
   },
   { path: '/:pathMatch(.*)*', component: () => import('../views/NotFound.vue') },
