@@ -13,8 +13,7 @@ This project is designed to monitor employee and item movement within a warehous
 - **[@abdisetiakawan](https://github.com/abdisetiakawan)** – Backend Developer, Web Frontend Developer  
 - **[@DwiJullian](https://github.com/DwiJullian)** – Machine Learning Engineer  
 - **[@RahadianCondro](https://github.com/RahadianCondro)** – IoT Engineer  
-- **[@sazaghi](https://github.com/sazaghi)** – Web Frontend Developer, Mobile Developer  
-- **[@astisulistio](https://github.com/astisulistio)** – UI/UX Developer
+- **[@sazaghi](https://github.com/sazaghi)** – Web Frontend Developer, Mobile Developer 
 
 ## Technologies Used
 - Python / Node.js (Backend)
