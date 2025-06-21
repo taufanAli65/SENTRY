@@ -18,7 +18,7 @@ const router = Router();
 router.post(
   "/admin/register",
   authenticate,
-  authorize(UserRoles.Owner),
+  asyncHandler(authorize(UserRoles.Owner)),
   uploadImage.single("photo"),
   asyncHandler(registerEmployee)
 );
