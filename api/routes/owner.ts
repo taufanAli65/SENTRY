@@ -10,21 +10,21 @@ const router = Router();
 router.get(
   "/users",
   authenticate,
-  authorize(UserRoles.Owner),
+  asyncHandler(authorize(UserRoles.Owner)),
   asyncHandler(listUsers)
 );
 
 router.post(
   "/users/:id/suspend",
   authenticate,
-  authorize(UserRoles.Owner),
+  asyncHandler(authorize(UserRoles.Owner)),
   asyncHandler(suspendUser)
 );
 
 router.post(
   "/users/:id/unsuspend",
   authenticate,
-  authorize(UserRoles.Owner),
+  asyncHandler(authorize(UserRoles.Owner)),
   asyncHandler(unsuspendUser)
 );
 
