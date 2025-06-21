@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { UserRoles } from "../models/users";
 import { AppError } from "../utils/app_error";
+import { AuthUser } from "../types/auth_types";
 
 export interface AuthPayload {
   id: string;
@@ -12,7 +13,7 @@ export interface AuthPayload {
 declare global {
   namespace Express {
     interface Request {
-      user?: AuthPayload;
+      user?: AuthUser;
     }
   }
 }
@@ -31,7 +32,13 @@ export const authenticate = (
       token,
       process.env.JWT_SECRET as string
     ) as AuthPayload;
-    req.user = decoded;
+
+    req.user = {
+      id: decoded.id,
+      email: decoded.email,
+      role: decoded.role as UserRoles,
+    };
+
     next();
   } catch (err) {
     throw AppError("Invalid or expired token", 401);
