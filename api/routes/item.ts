@@ -11,7 +11,7 @@ const router = Router();
 router.post(
   "/",
   authenticate,
-  authorize(UserRoles.Owner),
+  asyncHandler(authorize(UserRoles.Owner)),
   uploadImage.single("photo"),
   asyncHandler(createItem)
 );
@@ -36,7 +36,7 @@ router.get(
 router.delete(
   "/:id",
   authenticate,
-  authorize(UserRoles.Owner),
+  asyncHandler(authorize(UserRoles.Owner)),
   asyncHandler(deleteItem)
 );
 
