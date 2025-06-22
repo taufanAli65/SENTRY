@@ -97,17 +97,21 @@ All endpoints require authentication as Employee.
 - `POST /scans`
   - Create a scan record (item added to shelf).
   - **Body:** `{ "code_item": string, "isOut"?: boolean }`
+  - `code_item` is the item code (e.g. `SNTRY001`).
 
-- `PUT /scans/:id`
+- `PUT /scans/:scan_id`
   - Update a scan record (item taken from shelf).
+  - `scan_id` is the scan document ID.
 
 ### Rack Management
 
 All endpoints require authentication.
 
 - `POST /rack`
-  - Creates a new rack entry (registers an item as added/removed).
-  - **Body:** `{ "id_item": string, "isOut": boolean }`
+  - Creates a new rack entry (registers a weight change).
+  - **Body:** `{ "weight": number, "isOut": boolean }`
+  - `weight`: the item's weight (number)
+  - `isOut`: `true` if removing item, `false` if adding
 
 ### Warehouse Entry Management
 
@@ -149,14 +153,13 @@ All endpoints require authentication.
 - `stocked_at`: Date, required
 - `taken_by`: ObjectId (User), optional
 - `taken_at`: Date, optional
-- `id_item`: ObjectId (Item), required
+- `id_item`: string (item_code), required
 - `isOut`: boolean, required
 - `in_time`: Date (auto)
 - `out_time`: Date (auto)
 
 ### Rack
 
-- `item_code`: string, required
 - `weight`: number, required
 - `isOut`: boolean, required
 - `time`: Date (auto)
