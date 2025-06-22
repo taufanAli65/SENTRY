@@ -6,12 +6,12 @@ import { AppError } from '../utils/app_error';
 import { RackResult } from '../types/rack_types';
 import { checkWeightDiscrepancy } from '../utils/thief_suspection';
 
-export async function createRackService(id_item: string, isOut: boolean): Promise<RackResult & { thiefSuspection?: string }> {
+export async function createRackService(item_code: string, isOut: boolean): Promise<RackResult & { thiefSuspection?: string }> {
     const session = await mongoose.startSession();
     try {
         session.startTransaction();
 
-        const item = await Item.findById(id_item).session(session);
+        const item = await Item.findById(item_code).session(session);
         if (!item) throw AppError("Item not found", 404);
 
         // Get or create the single rack_realtime document
@@ -27,7 +27,7 @@ export async function createRackService(id_item: string, isOut: boolean): Promis
 
         // Create Rack entry
         const [rack] = await Rack.create([{
-            id_item,
+            item_code,
             weight: item.weight,
             isOut
         }], { session });
@@ -53,7 +53,7 @@ export async function createRackService(id_item: string, isOut: boolean): Promis
         // Return RackResult, optionally with thiefSuspection message
         return {
             id: (rack._id as Types.ObjectId).toString(),
-            id_item: rack.id_item,
+            item_code: rack.item_code,
             weight: rack.weight,
             isOut: rack.isOut,
             time: rack.time,

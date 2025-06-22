@@ -2,7 +2,7 @@ import { Types } from 'mongoose';
 
 export interface RackResult {
     id: string;
-    id_item: Types.ObjectId | string;
+    item_code: string;
     weight: number;
     isOut: boolean;
     time: Date;
