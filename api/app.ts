@@ -10,6 +10,7 @@ import authRouter from './routes/auth';
 import userRouter from './routes/user';
 import itemRouter from './routes/item';
 import ownerRouter from './routes/owner';
+import scansRouter from './routes/scans';
 import { multerErrorHandler } from "./middleware/multer_error_handler";
 import { globalErrorHandler } from "./utils/error_handler";
 import path from 'path';
@@ -31,6 +32,7 @@ app.use('/auth', authRouter);
 app.use('/user', userRouter);
 app.use('/items', itemRouter);
 app.use('/owner', ownerRouter);
+app.use('/scans', scansRouter)
 app.use(multerErrorHandler);
 app.use(globalErrorHandler)
 
