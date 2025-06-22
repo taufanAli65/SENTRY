@@ -120,6 +120,63 @@ All item endpoints require authentication via JWT.
   Update a scan record (item taken from shelf).  
   **Role:** Employee
 
+### Rack Management
+
+All rack endpoints require authentication via JWT.
+
+- `POST /rack/`  
+  Creates a new rack entry (registers an item as added to or removed from the warehouse).  
+  **Body:**  
+  ```
+  {
+    "id_item": string,      // Item ObjectId
+    "isOut": boolean        // true if removing item, false if adding
+  }
+  ```
+  **Role:** Employee  
+  **Headers:** `Authorization: Bearer <token>`  
+  **Response:**  
+  ```
+  {
+    "success": true,
+    "message": "Item successfully added to the warehouse." | "Item successfully removed from the warehouse.",
+    "data": {
+      "id": string,
+      "id_item": string,
+      "weight": number,
+      "isOut": boolean,
+      "time": string // ISO date
+    }
+  }
+  ```
+
+### Warehouse Entry Management
+
+All warehouse entry endpoints require authentication via JWT.
+
+- `GET /warehouse/entry/`  
+  Retrieves all warehouse entry records (paginated).  
+  **Query params:**  
+  - `page`: number (default: 1)  
+  - `limit`: number (default: 10)  
+  **Role:** Owner
+
+- `GET /warehouse/entry/:id`  
+  Retrieves a single warehouse entry by ID.  
+  **Role:** Owner
+
+- `POST /warehouse/entry/`  
+  Creates a new warehouse entry record.  
+  **Body:**  
+  ```
+  {
+    "id_user": string,              // User ObjectId
+    "entry_time"?: string,          // Optional ISO date string (defaults to now)
+    "face_recognition": string      // URL or path to face recognition image
+  }
+  ```
+  **Role:** Owner
+
 ## Models
 
 ### User
@@ -142,6 +199,12 @@ All item endpoints require authentication via JWT.
 - `in_time`: Date (auto)
 - `out_time`: Date (auto)
 - `isOut`: boolean
+
+### WarehouseEntry
+
+- `id_user`: string (User ObjectId), required
+- `entry_time`: Date, required (defaults to current time)
+- `face_recognition`: string, required (URL or path to face recognition image)
 
 ## Notes
 
