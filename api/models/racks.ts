@@ -8,7 +8,7 @@ export interface iRack extends Document {
 }
 
 const rackSchema = new Schema({
-    id_item: { type: Schema.Types.ObjectId, ref: 'Items', required: true },
+    id_item: { type: Schema.Types.ObjectId, ref: 'Item', required: true },
     weight: { type: Number, required: true },
     isOut: { type: Boolean, default: false, required: true },
 }, {
