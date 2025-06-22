@@ -24,6 +24,6 @@ export const rackIdSchema = z.object({
 });
 
 export const createRackServiceSchema = z.object({
-    item_code: z.string().regex(/^SNTRY\d{3}$/, "Invalid item code format"),
+    weight: z.number(),
     isOut: z.boolean(),
 });

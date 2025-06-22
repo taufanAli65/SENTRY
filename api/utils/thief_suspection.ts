@@ -7,7 +7,7 @@ import WarehouseEntry from '../models/warehouse_entries';
  * between the rack and item stocks. If a discrepancy is found, attempts to
  * identify the closest warehouse entry user as a suspect.
  */
-export async function checkWeightDiscrepancy(threshold: number): Promise<string | null> {
+export async function checkTimeDifferent(threshold: number): Promise<string | null> {
     // Get the latest data when the weight sensor was last updated
     const rackRealtimes = await RackRealtimes.findOne().sort({ time: -1 });
     if (!rackRealtimes) return "No rack realtime data available.";
