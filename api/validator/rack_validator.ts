@@ -6,24 +6,24 @@ const objectIdSchema = z.string().refine((val) => mongoose.Types.ObjectId.isVali
 });
 
 export const addRackSchema = z.object({
-    id_item: objectIdSchema,
+    item_code: z.string().regex(/^SNTRY\d{3}$/, "Invalid item code format"),
     weight: z.number(),
     isOut: z.boolean(),
     time: z.coerce.date(),
 });
 
 export const updateRackSchema = z.object({
-    id_item: objectIdSchema.optional(),
+    item_code: z.string().regex(/^SNTRY\d{3}$/, "Invalid item code format"),
     weight: z.number().optional(),
     isOut: z.boolean().optional(),
     time: z.coerce.date().optional(),
 });
 
 export const rackIdSchema = z.object({
-    id: objectIdSchema
+    item_code: z.string().regex(/^SNTRY\d{3}$/, "Invalid item code format"),
 });
 
 export const createRackServiceSchema = z.object({
-    id_item: objectIdSchema,
+    item_code: z.string().regex(/^SNTRY\d{3}$/, "Invalid item code format"),
     isOut: z.boolean(),
 });

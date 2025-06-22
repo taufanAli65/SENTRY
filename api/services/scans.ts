@@ -13,10 +13,10 @@ export async function createScanService(id_user: string, code_item: string, isOu
         const item = await Item.findOne({ item_code: code_item }).session(session);
         if (!item) throw AppError("Item not found", 404);
 
-        let itemStock = await ItemStock.findOne({ id_item: item._id }).session(session);
+        let itemStock = await ItemStock.findOne({ id_item: item.item_code }).session(session);
         if (!itemStock) {
             itemStock = new ItemStock({
-                id_item: item._id,
+                id_item: item.item_code,
                 stock: 1,
                 weight: item.weight
             });
@@ -30,7 +30,7 @@ export async function createScanService(id_user: string, code_item: string, isOu
         const scan = await Scan.create([{
             stocked_by: id_user,
             stocked_at: new Date(),
-            id_item: item._id,
+            id_item: item.item_code,
             isOut: isOut ?? false
         }], { session });
 
