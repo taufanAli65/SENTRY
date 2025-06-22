@@ -1,17 +1,13 @@
+import crypto from 'crypto';
 import User, { UserRoles } from '../models/users';
-import { LoginResponse, RegisterResult } from '../types/auth_types';
+import { LoginResponse } from '../types/auth_types';
 import { AppError } from '../utils/app_error';
 import { comparePassword, generatePassword, hashPassword } from '../utils/password';
 import jwt from 'jsonwebtoken';
 import { sendEmail } from '../utils/send_email';
-import crypto from 'crypto';
 
 
 async function register(email: string, name: string, photoUrl: string, role: UserRoles): Promise<void> {
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-        throw AppError("User already exists", 409);
-    }
     const passwords = await generatePassword();
     await sendEmail({
         to: email,
@@ -50,9 +46,16 @@ async function login(email: string, password: string): Promise<LoginResponse> {
         { expiresIn: "1d" }
     );
     return {
-        token: token
+        user: {
+            id: user._id.toString(),
+            email: user.email,
+            name: user.name,
+            role: user.role
+        },
+        token
     };
 }
+
 
 async function forgotPassword(email: string): Promise<void> {
     const user = await User.findOne({ email });
@@ -76,7 +79,7 @@ async function forgotPassword(email: string): Promise<void> {
         templateName: 'reset_password',
         context: {
             name: user.name,
-            resetUrl: `http://localhost:${process.env.PORT}/auth/reset-password/${resetToken}`
+            resetUrl: `${process.env.CLIENT_URL}/reset-password/${resetToken}`
         }
     });
 }

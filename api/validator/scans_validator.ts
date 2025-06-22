@@ -6,13 +6,12 @@ const objectIdSchema = z.string().refine((val) => mongoose.Types.ObjectId.isVali
 });
 
 export const addScanSchema = z.object({
-    id_user: objectIdSchema,
-    id_item: objectIdSchema,
+    code_item: z.string().regex(/^SNTRY\d{3}$/, "Invalid item code format"),
     isOut: z.boolean().optional(),
 });
 
 export const updateScanSchema = z.object({});
 
 export const scanIdSchema = z.object({
-    id: objectIdSchema
+    scan_id : objectIdSchema
 });

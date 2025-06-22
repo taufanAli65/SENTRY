@@ -1,36 +1,46 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { UserRoles } from '../models/users';
-import { AppError } from '../utils/app_error';
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import { UserRoles } from "../models/users";
+import { AppError } from "../utils/app_error";
+import { AuthUser } from "../types/auth_types";
 
 export interface AuthPayload {
-    id: string;
-    email: string;
-    role: UserRoles;
+  id: string;
+  email: string;
+  role: UserRoles;
 }
 
 declare global {
-    namespace Express {
-        interface Request {
-            user?: AuthPayload;
-        }
+  namespace Express {
+    interface Request {
+      user?: AuthUser;
     }
+  }
 }
 
-export const authenticate = (req: Request, res: Response, next: NextFunction): void => {
-    const authHeader = req.headers.authorization;
+export const authenticate = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  const token = req.cookies?.token || req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    throw AppError("Authorization token missing", 401);
+  }
+  try {
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET as string
+    ) as AuthPayload;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        throw AppError('Authorization token missing', 401);
-    }
+    req.user = {
+      id: decoded.id,
+      email: decoded.email,
+      role: decoded.role as UserRoles,
+    };
 
-    const token = authHeader.split(' ')[1];
-
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as AuthPayload;
-        req.user = decoded;
-        next();
-    } catch (err) {
-        throw AppError('Invalid or expired token', 401);
-    }
+    next();
+  } catch (err) {
+    throw AppError("Invalid or expired token", 401);
+  }
 };

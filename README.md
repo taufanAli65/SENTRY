@@ -9,12 +9,39 @@ This is a RESTful API for user authentication and item management, built with No
 - [MongoDB](https://www.mongodb.com/) instance (local or cloud)
 - A `.env` file with required environment variables (see Setup section)
 
+## Endpoints
+
+### Root
+
+- `GET /`
+  - Returns a development status message.
+
+### Authentication
+
+- `POST /auth/register form-data`
+
+  - Registers a new user.
+  - **Body:** `{ "email": string, "role": string, "name": string, "photo": image }`
+  - **Response:** User info and generated password (for development only).
+- `POST /auth/login`
+
+  - Logs in a user.
+  - **Body:** `{ "email": string, "password": string }`
+  - **Response:** JWT token if credentials are valid.
+
+## User Model
+
+- `email`: string, required, unique
+- `name`: string, required
+- `role`: string, one of `owner`, `admin`, `employee`
+- `photoUrl`: string, required
+- `password`: string, required (hashed)
+
 ## Setup
 
-1. Install dependencies:  
-   `npm install`
-
+1. Install dependencies:`npm install`
 2. Set environment variables in a `.env` file:
+
    ```
    MONGODB_URL=your_mongodb_connection_string
    JWT_SECRET=your_jwt_secret
@@ -24,8 +51,7 @@ This is a RESTful API for user authentication and item management, built with No
    EMAIL_USER=your_email
    EMAIL_PASS=your_email_password
    ```
-
-3. Start the server:  
+3. Start the server:
    `npm start`
 
 ## Endpoints

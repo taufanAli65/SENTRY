@@ -1,3 +1,5 @@
+import { Request } from 'express';
+import { UserRoles } from '../models/users';
 export interface RegisterResult {
   id: string;
   email: string;
@@ -13,6 +15,12 @@ export interface GeneratedPassword {
 }
 
 export interface LoginResponse {
+  user: {
+    id: string;
+    email: string;
+    name: string;
+    role: UserRoles;
+  },
   token: string;
 }
 
@@ -26,7 +34,7 @@ export interface ForgotPasswordResponse {
 }
 
 export interface AuthUser {
-    uid: string;
+    id: string;
     email: string;
     role: string;
 }
