@@ -11,7 +11,7 @@ export async function createRackService(item_code: string, isOut: boolean): Prom
     try {
         session.startTransaction();
 
-        const item = await Item.findById(item_code).session(session);
+        const item = await Item.findOne({ item_code }).session(session);
         if (!item) throw AppError("Item not found", 404);
 
         // Get or create the single rack_realtime document
