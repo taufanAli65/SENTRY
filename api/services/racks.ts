@@ -1,7 +1,7 @@
 import mongoose, { Types } from 'mongoose';
 import Rack from '../models/racks';
 import RackRealtime from '../models/rack_realtimes';
-import Item from '../models/items';
+import Item from '../models/item';
 import { AppError } from '../utils/app_error';
 import { RackResult } from '../types/rack_types';
 import { checkWeightDiscrepancy } from '../utils/thief_suspection';

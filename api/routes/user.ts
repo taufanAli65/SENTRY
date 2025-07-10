@@ -8,7 +8,7 @@ const router = Router();
 
 router.get(
   "/profile",
-  authenticate,
+  asyncHandler(authenticate),
   asyncHandler((req: Request, res: Response, next: NextFunction) => {
     getUserProfile(req as unknown as AuthenticatedRequest, res, next);
   })

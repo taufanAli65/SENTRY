@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { createScanService, updateScanService } from '../services/scans';
+import { createScanService, getScanHistory } from '../services/scans';
 import { addScanSchema, scanIdSchema } from '../validator/scans_validator';
 import { sendSuccess } from '../utils/send_response';
 import { validate } from '../utils/validate';
@@ -16,13 +16,24 @@ export const createScan = async (req: AuthenticatedRequest, res: Response, next:
     }
 };
 
-export const updateScan = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<Response | void> => {
+export const getScans = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
-        const { scan_id } = validate(scanIdSchema, req.params);
-        const user_id = req.user.id;
-        const result = await updateScanService(scan_id, user_id);
-        return sendSuccess(res, 200, "Scan out item successfully", result);
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 10;
+        const result = await getScanHistory(page, limit);
+        return sendSuccess(res, 200, "Scans fetched successfully", result);
     } catch (error) {
         next(error);
     }
 };
+
+export const updateScan = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<Response | void> => {
+    try {
+        const { code_item } = validate(addScanSchema, req.body);
+        const user_id = req.user.id;
+        const result = await createScanService(user_id, code_item, true); // isOut = true
+        return sendSuccess(res, 200, "Scan out item successfully", result);
+    } catch (error) {
+        next(error);
+    }
+}
