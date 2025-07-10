@@ -53,6 +53,21 @@
                 </RouterLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
+
+            <SidebarMenuItem v-if="user.role === 'employee'">
+              <SidebarMenuButton as-child :is-active="isCurrentRoute('/scans')">
+                <RouterLink to="/scans">
+                  <QrCode class="size-4" />
+                  <span>Scan Items</span>
+                </RouterLink>
+              </SidebarMenuButton>
+              <SidebarMenuButton as-child :is-active="isCurrentRoute('/items')">
+                <RouterLink to="/items">
+                  <Package class="size-4" />
+                  <span>Items</span>
+                </RouterLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>
@@ -279,6 +294,7 @@ import {
   ChevronsUpDown,
   Plus,
   Package,
+  QrCode,
 } from 'lucide-vue-next'
 
 import { ref, onMounted } from 'vue'

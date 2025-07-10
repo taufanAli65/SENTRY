@@ -49,6 +49,7 @@ function getCurrentPageTitle(): string {
     '/settings': 'Settings',
     '/change-password': 'Change Password',
     '/create-item': 'Create Item',
+    '/scans': 'Scan Items',
   }
   return pageMap[path] || 'Page'
 }

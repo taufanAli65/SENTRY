@@ -24,6 +24,7 @@
             />
             <Button @click="fetchItems" variant="outline" class="w-fit"> Search </Button>
           </div>
+
           <div class="overflow-x-auto">
             <table class="min-w-full text-sm">
               <thead>
@@ -59,7 +60,13 @@
                     <Button size="sm" variant="outline" @click="showDetail(item)">
                       <Eye class="w-4 h-4" />
                     </Button>
-                    <Button size="sm" variant="destructive" @click="confirmDelete(item)">
+                    <!-- Only show delete button for admin -->
+                    <Button
+                      v-if="isAdmin"
+                      size="sm"
+                      variant="destructive"
+                      @click="confirmDelete(item)"
+                    >
                       <Trash class="w-4 h-4" />
                     </Button>
                   </td>
@@ -72,17 +79,14 @@
               </tbody>
             </table>
           </div>
+
           <!-- Pagination -->
           <div class="flex justify-between items-center mt-4">
-            <Button variant="outline" :disabled="page === 1" @click="page-- && fetchItems()">
+            <Button variant="outline" :disabled="page === 1" @click="previousPage">
               Previous
             </Button>
             <span class="text-sm text-muted-foreground"> Page {{ page }} of {{ totalPages }} </span>
-            <Button
-              variant="outline"
-              :disabled="page === totalPages"
-              @click="page++ && fetchItems()"
-            >
+            <Button variant="outline" :disabled="page === totalPages" @click="nextPage">
               Next
             </Button>
           </div>
@@ -135,12 +139,21 @@
           <DialogTitle>Delete Item</DialogTitle>
         </DialogHeader>
         <div>
-          Are you sure you want to delete <span class="font-semibold">{{ selectedItem?.name }}</span
+          Are you sure you want to delete
+          <span class="font-semibold">{{ selectedItem?.name }}</span
           >?
         </div>
+
         <DialogFooter>
           <Button variant="outline" @click="deleteOpen = false">Cancel</Button>
-          <Button variant="destructive" @click="deleteItem" :loading="loadingDelete">Delete</Button>
+          <Button
+            variant="destructive"
+            @click="deleteItem"
+            :loading="loadingDelete"
+            :disabled="loadingDelete"
+          >
+            Delete
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -162,7 +175,13 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { Eye, Trash, Package } from 'lucide-vue-next'
+import { useUserStore } from '@/stores/user'
 
+// User store and reactive user data
+const userStore = useUserStore()
+const user = ref(userStore.user)
+
+// Reactive state
 const items = ref<any[]>([])
 const page = ref(1)
 const limit = ref(10)
@@ -174,14 +193,22 @@ const selectedItem = ref<any>(null)
 const barcodeRef = ref<SVGSVGElement | null>(null)
 const loadingDelete = ref(false)
 
+// Computed properties
 const totalPages = computed(() => Math.ceil(total.value / limit.value))
+const isAdmin = computed(() => user.value?.role === 'admin')
 
+// Methods
 async function fetchItems() {
-  const params: any = { page: page.value, limit: limit.value }
-  if (search.value) params.search = search.value
-  const res = await api.get('/api/items', { params })
-  items.value = res.data.data.items
-  total.value = res.data.data.total
+  try {
+    const params: any = { page: page.value, limit: limit.value }
+    if (search.value) params.search = search.value
+
+    const res = await api.get('/api/items', { params })
+    items.value = res.data.data.items
+    total.value = res.data.data.total
+  } catch (error) {
+    console.error('Error fetching items:', error)
+  }
 }
 
 function showDetail(item: any) {
@@ -189,38 +216,41 @@ function showDetail(item: any) {
   detailOpen.value = true
 }
 
-watch(detailOpen, async (open) => {
-  if (open && selectedItem.value) {
-    await nextTick()
-    if (barcodeRef.value) {
-      JsBarcode(barcodeRef.value, selectedItem.value.item_code, {
-        format: 'CODE128',
-        width: 2,
-        height: 60,
-        displayValue: true,
-        fontSize: 12,
-        margin: 10,
-      })
-    }
-  }
-})
-
 function confirmDelete(item: any) {
+  if (!isAdmin.value) return
   selectedItem.value = item
   deleteOpen.value = true
 }
 
 async function deleteItem() {
-  if (!selectedItem.value) return
+  if (!selectedItem.value || !isAdmin.value) return
+
   loadingDelete.value = true
   try {
     await api.delete(`/api/items/${selectedItem.value._id}`)
     deleteOpen.value = false
-    fetchItems()
+    await fetchItems()
+  } catch (error) {
+    console.error('Error deleting item:', error)
   } finally {
     loadingDelete.value = false
   }
 }
+
+function previousPage() {
+  if (page.value > 1) {
+    page.value--
+    fetchItems()
+  }
+}
+
+function nextPage() {
+  if (page.value < totalPages.value) {
+    page.value++
+    fetchItems()
+  }
+}
+
 function printBarcode() {
   if (!barcodeRef.value || !selectedItem.value) return
 
@@ -271,5 +301,23 @@ function printBarcode() {
   }
 }
 
+// Watchers
+watch(detailOpen, async (open) => {
+  if (open && selectedItem.value) {
+    await nextTick()
+    if (barcodeRef.value) {
+      JsBarcode(barcodeRef.value, selectedItem.value.item_code, {
+        format: 'CODE128',
+        width: 2,
+        height: 60,
+        displayValue: true,
+        fontSize: 12,
+        margin: 10,
+      })
+    }
+  }
+})
+
+// Initialize
 fetchItems()
 </script>
