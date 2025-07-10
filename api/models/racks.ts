@@ -1,14 +1,12 @@
-import { Schema, model, Document, Types } from 'mongoose';
+import { Schema, model, Document } from 'mongoose';
 
 export interface iRack extends Document {
-    id_item: Types.ObjectId,
     weight: number,
     isOut: boolean,
     time: Date,
 }
 
 const rackSchema = new Schema({
-    id_item: { type: Schema.Types.ObjectId, ref: 'Items', required: true },
     weight: { type: Number, required: true },
     isOut: { type: Boolean, default: false, required: true },
 }, {
